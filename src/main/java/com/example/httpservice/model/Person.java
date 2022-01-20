@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 @Accessors(chain = true)
 @Table(name = "persons")
-public class Person implements UserDetails {
+public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -44,39 +44,4 @@ public class Person implements UserDetails {
     @OneToMany(mappedBy = "person")
     @ToString.Exclude
     private Set<Link> links = new HashSet<>();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.role.getAuthorities();
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return isDeleted == 0;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return isDeleted == 0;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return isDeleted == 0;
-    }
 }

@@ -11,7 +11,9 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ListDataResponse<T extends Content>{
-    Instant timestamp;
-    int total;
+    private Instant timestamp;
+    private int total;
+    private int offset;
+    private int itemPerPage;
     private List<T> data;
 }

@@ -15,9 +15,9 @@ CREATE TABLE persons
 CREATE TABLE links
 (
     id            BIGINT AUTO_INCREMENT NOT NULL,
-    parent_url    VARCHAR(255)          NOT NULL,
+    parent_url    TEXT          NOT NULL,
     short_url     VARCHAR(255)          NOT NULL,
-    votes         INT                   NULL,
+    view         INT                   NULL,
     is_deleted    INT                   NOT NULL,
     reg_date      datetime              NOT NULL,
     life_for_date datetime              NULL,

@@ -5,7 +5,7 @@ import com.example.httpservice.api.response.AuthData;
 import com.example.httpservice.api.response.DataResponse;
 import com.example.httpservice.exceptions.AuthenticationException;
 import com.example.httpservice.exceptions.PersonExistException;
-import com.example.httpservice.service.AccountService;
+import com.example.httpservice.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +23,18 @@ import java.time.ZoneId;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AccountService accountService;
+    private final AuthService authService;
 
     @Operation(summary = "Регистрация")
     @PostMapping("/register")
     public ResponseEntity<DataResponse<AuthData>> registration(@RequestBody RegisterRequest registerRequest) throws PersonExistException {
-        return new ResponseEntity<>(accountService.registration(registerRequest), HttpStatus.OK);
+        return new ResponseEntity<>(authService.registration(registerRequest), HttpStatus.OK);
     }
 
     @Operation(summary = "Авторизация")
     @PostMapping("/login")
     public ResponseEntity<DataResponse<AuthData>> login(@RequestBody RegisterRequest registerRequest) throws AuthenticationException {
-        return new ResponseEntity<>(accountService.login(registerRequest), HttpStatus.OK);
+        return new ResponseEntity<>(authService.login(registerRequest), HttpStatus.OK);
     }
 
     @Operation(summary = "Выход из сессии")

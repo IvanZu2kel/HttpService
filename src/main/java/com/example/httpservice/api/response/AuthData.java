@@ -12,5 +12,4 @@ import java.util.Set;
 public class AuthData implements Content{
     private Long id;
     private String email;
-    private Set<Link> links = new HashSet<>();
 }

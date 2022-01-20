@@ -24,8 +24,8 @@ public class Link {
     @Column(name = "short_url")
     private String shortUrl;
 
-    @Column(name = "votes")
-    private int votes;
+    @Column(name = "view")
+    private int view;
 
     @Column(name = "is_deleted")
     private int isDeleted;
@@ -36,7 +36,7 @@ public class Link {
     @Column(name = "life_for_date")
     private Instant lifeByDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private Person person;
 }
