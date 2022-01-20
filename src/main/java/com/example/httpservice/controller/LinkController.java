@@ -23,7 +23,7 @@ import java.security.Principal;
 public class LinkController {
     private final LinkService linkService;
 
-    @Operation(summary = "Регистрация")
+    @Operation(summary = "Создание короткой ссылки с учетом времени ее жизни")
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<DataResponse<LinkData>> registration(@RequestParam String link,

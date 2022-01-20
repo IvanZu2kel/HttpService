@@ -40,9 +40,11 @@ public class LinkService {
                     .setVotes(0)
                     .setIsDeleted(0)
                     .setRegDate(Instant.from(Instant.now().atZone(ZoneId.systemDefault())))
-                    .setLifeByDate(Instant.from(Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault())))
                     .setParentUrl(link)
                     .setPerson(person.get());
+            if (timestamp != -1) {
+                newLink.setLifeByDate(Instant.from(Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault())));
+            }
             savedLink = linkRepository.save(newLink);
         }
         return getDataResponse(savedLink);
