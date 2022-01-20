@@ -4,11 +4,10 @@ import com.example.httpservice.api.request.RegisterRequest;
 import com.example.httpservice.api.response.AuthData;
 import com.example.httpservice.api.response.DataResponse;
 import com.example.httpservice.exceptions.AuthenticationException;
+import com.example.httpservice.exceptions.InvalidInputFormat;
 import com.example.httpservice.exceptions.PersonExistException;
-import com.example.httpservice.model.Link;
 import com.example.httpservice.model.Person;
 import com.example.httpservice.model.enums.Role;
-import com.example.httpservice.repository.LinkRepository;
 import com.example.httpservice.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,23 +29,24 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final PersonRepository personRepository;
 
-    public DataResponse<AuthData> registration(RegisterRequest registerRequest) throws PersonExistException {
+    public DataResponse<AuthData> registration(RegisterRequest registerRequest) throws PersonExistException, InvalidInputFormat {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
         Optional<Person> byEmail = personRepository.findByEmail(registerRequest.getEmail());
         Person savedPerson;
         if (byEmail.isPresent()) {
             throw new PersonExistException("Person is exist");
-        } else {
+        }
+        if (registerRequest.getEmail().matches("^(.+)@(.+)$")) {
             Person person = new Person()
                     .setEmail(registerRequest.getEmail())
                     .setPassword(passwordEncoder.encode(registerRequest.getPassword()))
                     .setRegDate(Instant.from(Instant.now().atZone(ZoneId.systemDefault())))
                     .setIsDeleted(0)
-                    .setRole(Role.USER)
-                    .setLinks(null);
+                    .setRole(Role.USER);
             savedPerson = personRepository.save(person);
+            return getDataResponse(savedPerson);
         }
-        return getDataResponse(savedPerson);
+        throw new InvalidInputFormat("Не верный формат воода email");
     }
 
     public DataResponse<AuthData> login(RegisterRequest registerRequest) throws AuthenticationException {

@@ -49,7 +49,7 @@ public class LinkController {
     @Operation(summary = "Изменение пути в короткой ссылке")
     @PutMapping("/api/link/{id}")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<DataResponse<LinkData>> changePath(@PathVariable String id,
+    public ResponseEntity<DataResponse<LinkData>> changePath(@PathVariable Long id,
                                                              @RequestParam String link,
                                                              @RequestParam(defaultValue = "-1") long timestamp) {
         return new ResponseEntity<>(linkService.changePath(id, link, timestamp), HttpStatus.OK);
@@ -58,14 +58,14 @@ public class LinkController {
     @Operation(summary = "Удаление ссылки")
     @DeleteMapping("/api/link/{id}")
     @PreAuthorize("hasAuthority('user:write')")
-    public void deleteLink(@PathVariable String id) {
+    public void deleteLink(@PathVariable Long id) {
         linkService.deleteLink(id);
     }
 
     @Operation(summary = "Восстановление ссылки")
     @PutMapping("/api/link/{id}/recovery")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<DataResponse<LinkData>> recoveryLink(@PathVariable String id) {
+    public ResponseEntity<DataResponse<LinkData>> recoveryLink(@PathVariable Long id) {
         return new ResponseEntity<>(linkService.recoveryLink(id), HttpStatus.OK);
     }
 }

@@ -40,8 +40,4 @@ public class Person {
 
     @Column(name = "is_deleted")
     private int isDeleted;
-
-    @OneToMany(mappedBy = "person")
-    @ToString.Exclude
-    private Set<Link> links = new HashSet<>();
 }

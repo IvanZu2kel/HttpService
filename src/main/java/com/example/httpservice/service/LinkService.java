@@ -5,29 +5,33 @@ import com.example.httpservice.api.response.LinkData;
 import com.example.httpservice.api.response.ListDataResponse;
 import com.example.httpservice.model.Link;
 import com.example.httpservice.model.Person;
+import com.example.httpservice.model.UniqueView;
 import com.example.httpservice.repository.LinkRepository;
 import com.example.httpservice.repository.PersonRepository;
+import com.example.httpservice.repository.UniqueViewRepository;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class LinkService {
     private final PersonRepository personRepository;
     private final LinkRepository linkRepository;
+    private final UniqueViewRepository uniqueViewRepository;
 
     @Value("${server.base_url}")
     private String baseUrl;
@@ -62,9 +66,21 @@ public class LinkService {
         if (parentLinkBySmth.isEmpty()) {
             return null;
         }
-        parentLinkBySmth.get().setView(parentLinkBySmth.get().getView() + 1);
-        linkRepository.updateViewCount(parentLinkBySmth.get().getId(), parentLinkBySmth.get().getView());
-        if (parentLinkBySmth.get().getLifeByDate() != null && !parentLinkBySmth.get().getLifeByDate().isAfter(Instant.from(Instant.now().atZone(ZoneId.systemDefault())))) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (email.matches("^(.+)@(.+)$")) {
+            Optional<Person> person = personRepository.findByEmail(email);
+            if (person.isPresent()) {
+                UniqueView uniqueView = new UniqueView()
+                        .setLink(parentLinkBySmth.get())
+                        .setPerson(person.get());
+                uniqueViewRepository.save(uniqueView);
+            }
+        } else {
+            parentLinkBySmth.get().setView(parentLinkBySmth.get().getView() + 1);
+            linkRepository.updateViewCount(parentLinkBySmth.get().getId(), parentLinkBySmth.get().getView());
+        }
+        if (parentLinkBySmth.get().getLifeByDate() != null && !parentLinkBySmth.get().getLifeByDate()
+                .isAfter(Instant.from(Instant.now().atZone(ZoneId.systemDefault())))) {
             linkRepository.delete(parentLinkBySmth.get());
             return null;
         }
@@ -72,10 +88,10 @@ public class LinkService {
     }
 
 
-    public DataResponse<LinkData> changePath(String id, String link, long timestamp) {
+    public DataResponse<LinkData> changePath(Long id, String link, long timestamp) {
         Optional<Link> linkOptional = linkRepository.findByLinkId(id);
         if (linkOptional.isPresent()) {
-            if (!link.trim().equals("")){
+            if (!link.trim().equals("")) {
                 linkOptional.get().setParentUrl(link);
                 if (timestamp != -1) {
                     linkOptional.get().setLifeByDate(Instant.from(Instant.now().atZone(ZoneId.systemDefault())));
@@ -96,7 +112,7 @@ public class LinkService {
         return getListDataResponse(linkPage, pageable);
     }
 
-    public void deleteLink(String id) {
+    public void deleteLink(Long id) {
         Optional<Link> linkOptional = linkRepository.findByLinkId(id);
         if (linkOptional.isPresent()) {
             linkOptional.get().setIsDeleted(1);
@@ -104,7 +120,7 @@ public class LinkService {
         }
     }
 
-    public DataResponse<LinkData> recoveryLink(String id) {
+    public DataResponse<LinkData> recoveryLink(Long id) {
         Optional<Link> linkOptional = linkRepository.findDeletedByLinkId(id);
         if (linkOptional.isPresent()) {
             linkOptional.get().setIsDeleted(0);
@@ -146,9 +162,16 @@ public class LinkService {
     }
 
     private LinkData getLinkData(Link link) {
+        List<UniqueView> uniqueViewList = uniqueViewRepository.findAllByLinkId(link.getId());
+        Map<String, Integer> map = new HashMap<>();
+        for (UniqueView uv : uniqueViewList) {
+            String email = uv.getPerson().getEmail();
+            map.put(email, (int) uniqueViewList.stream().filter(u -> u.getPerson().getEmail().equals(email)).count());
+        }
         return new LinkData()
                 .setShortUrl(link.getShortUrl())
                 .setViewCount(link.getView())
-                .setId(link.getId());
+                .setId(link.getId())
+                .setUniqueViews(map);
     }
 }

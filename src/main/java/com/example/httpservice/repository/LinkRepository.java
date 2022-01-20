@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -39,10 +38,10 @@ public interface LinkRepository extends JpaRepository<Link, Integer> {
     @Query("select l from Link l " +
             "where l.id = :id " +
             "and l.isDeleted = 0")
-    Optional<Link> findByLinkId(String id);
+    Optional<Link> findByLinkId(Long id);
 
     @Query("select l from Link l " +
             "where l.id = :id " +
             "and l.isDeleted = 1")
-    Optional<Link> findDeletedByLinkId(String id);
+    Optional<Link> findDeletedByLinkId(Long id);
 }

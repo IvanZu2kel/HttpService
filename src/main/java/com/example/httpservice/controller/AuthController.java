@@ -4,6 +4,7 @@ import com.example.httpservice.api.request.RegisterRequest;
 import com.example.httpservice.api.response.AuthData;
 import com.example.httpservice.api.response.DataResponse;
 import com.example.httpservice.exceptions.AuthenticationException;
+import com.example.httpservice.exceptions.InvalidInputFormat;
 import com.example.httpservice.exceptions.PersonExistException;
 import com.example.httpservice.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,7 @@ public class AuthController {
 
     @Operation(summary = "Регистрация")
     @PostMapping("/register")
-    public ResponseEntity<DataResponse<AuthData>> registration(@RequestBody RegisterRequest registerRequest) throws PersonExistException {
+    public ResponseEntity<DataResponse<AuthData>> registration(@RequestBody RegisterRequest registerRequest) throws PersonExistException, InvalidInputFormat {
         return new ResponseEntity<>(authService.registration(registerRequest), HttpStatus.OK);
     }
 

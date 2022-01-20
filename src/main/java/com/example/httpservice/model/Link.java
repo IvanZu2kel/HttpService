@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 
 @Setter
 @Getter
@@ -39,4 +40,7 @@ public class Link {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private Person person;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "link")
+    private List<UniqueView> uniqueVies;
 }
