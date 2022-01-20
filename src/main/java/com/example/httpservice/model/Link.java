@@ -34,7 +34,7 @@ public class Link {
     private Instant regDate;
 
     @Column(name = "life_for_date")
-    private Instant lifeForkDate;
+    private Instant lifeByDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
