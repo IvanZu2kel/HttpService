@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:mysql://localhost:3306/http_service?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&amp&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ENC(eG0r4FT1dPNlYKFt8C0cdQ==)
+    password: ENC(xbkrb8StJMl8a+LzQXS2iJykT9wSEcfx)
+  flyway:
+    baseline-on-migrate: true
+server:
+  base_url: http://localhost:8080
+mailjet:
+  mail:
+    key: ENC(DNVszMtuQ5agS7APJ9XdIUsV9uF7YvUMudy6ulvaQKlGC8+tZlTFTtelwJV80EZz)
+    secret: ENC(oq8vsQrtMEX9hNYwfUjy3gwZIubjjd+2tccsK3jQKq+fqNDXZzizK+aRH7GuY107)
+    from: ENC(umHEhd3xewaiif6GsHZOkVV2c5xBu5lR5UHXCzXb2+9th0TzHRFm9A==)
+jasypt:
+  encryptor:
+    bean: encryptorBean
