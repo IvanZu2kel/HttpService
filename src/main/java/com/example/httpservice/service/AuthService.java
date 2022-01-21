@@ -36,7 +36,7 @@ public class AuthService {
         if (byEmail.isPresent()) {
             throw new PersonExistException("Person is exist");
         }
-        if (registerRequest.getEmail().matches("^(.+)@(.+)$")) {
+        if (registerRequest.getEmail().matches("^(.+)@(.+)$") && registerRequest.getPassword().length() >= 4) {
             Person person = new Person()
                     .setEmail(registerRequest.getEmail())
                     .setPassword(passwordEncoder.encode(registerRequest.getPassword()))
@@ -46,7 +46,7 @@ public class AuthService {
             savedPerson = personRepository.save(person);
             return getDataResponse(savedPerson);
         }
-        throw new InvalidInputFormat("Не верный формат воода email");
+        throw new InvalidInputFormat("Не верный формат ввода email или пароля");
     }
 
     public DataResponse<AuthData> login(RegisterRequest registerRequest) throws AuthenticationException {
