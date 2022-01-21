@@ -1,0 +1,1 @@
+web: java -jar target/HttpService-1.0.jar
