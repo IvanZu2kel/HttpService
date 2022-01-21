@@ -5,6 +5,7 @@ import com.example.httpservice.api.response.LinkData;
 import com.example.httpservice.api.response.ListDataResponse;
 import com.example.httpservice.service.LinkService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class LinkController {
         return linkService.followTheLink(smth);
     }
 
-    @Operation(summary = "Создание короткой ссылки с учетом времени ее жизни")
+    @Operation(summary = "Создание короткой ссылки с учетом времени ее жизни", security = @SecurityRequirement(name = "default"))
     @PostMapping("/api/link/create")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<DataResponse<LinkData>> registration(@RequestParam String link,
@@ -37,7 +38,7 @@ public class LinkController {
         return new ResponseEntity<>(linkService.createNewLink(link, timestamp, principal), HttpStatus.OK);
     }
 
-    @Operation(summary = "Получение списка коротких ссылок")
+    @Operation(summary = "Получение списка коротких ссылок", security = @SecurityRequirement(name = "default"))
     @GetMapping("/api/link")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<ListDataResponse<LinkData>> getAllLinks(@RequestParam(required = false, defaultValue = "0") int offset,
@@ -46,7 +47,7 @@ public class LinkController {
         return new ResponseEntity<>(linkService.getAllLinks(offset, itemPerPage, principal), HttpStatus.OK);
     }
 
-    @Operation(summary = "Изменение пути в короткой ссылке")
+    @Operation(summary = "Изменение пути в короткой ссылке", security = @SecurityRequirement(name = "default"))
     @PutMapping("/api/link/{id}")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<DataResponse<LinkData>> changePath(@PathVariable Long id,
@@ -55,14 +56,14 @@ public class LinkController {
         return new ResponseEntity<>(linkService.changePath(id, link, timestamp), HttpStatus.OK);
     }
 
-    @Operation(summary = "Удаление ссылки")
+    @Operation(summary = "Удаление ссылки", security = @SecurityRequirement(name = "default"))
     @DeleteMapping("/api/link/{id}")
     @PreAuthorize("hasAuthority('user:write')")
     public void deleteLink(@PathVariable Long id) {
         linkService.deleteLink(id);
     }
 
-    @Operation(summary = "Восстановление ссылки")
+    @Operation(summary = "Восстановление ссылки", security = @SecurityRequirement(name = "default"))
     @PutMapping("/api/link/{id}/recovery")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<DataResponse<LinkData>> recoveryLink(@PathVariable Long id) {
