@@ -8,6 +8,7 @@ import com.example.httpservice.exceptions.InvalidInputFormat;
 import com.example.httpservice.exceptions.PersonExistException;
 import com.example.httpservice.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class AuthController {
         return new ResponseEntity<>(authService.login(registerRequest), HttpStatus.OK);
     }
 
-    @Operation(summary = "Выход из сессии")
+    @Operation(summary = "Выход из сессии", security = @SecurityRequirement(name = "default"))
     @GetMapping("/logout")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<DataResponse<?>> getLogout() {

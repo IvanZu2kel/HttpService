@@ -12,6 +12,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "HTTP SERVICE", version = "0.0.1 SNAPSHOT"))
-@SecurityScheme(type = SecuritySchemeType.DEFAULT)
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "default", in = SecuritySchemeIn.DEFAULT)
 public class SpringFoxConfig {
 }
