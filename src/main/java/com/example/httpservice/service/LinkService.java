@@ -56,6 +56,11 @@ public class LinkService {
             if (timestamp != -1) {
                 newLink.setLifeByDate(Instant.from(Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault())));
             }
+            List<Link> all = linkRepository.findAll();
+            List<String> strings = all.stream().map(Link::getShortUrl).toList();
+            if (strings.contains(newLink.getShortUrl())) {
+                newLink.setShortUrl(newLink.getShortUrl() + plusSymbols());
+            }
             savedLink = linkRepository.save(newLink);
         }
         return getDataResponse(savedLink);
@@ -132,6 +137,10 @@ public class LinkService {
 
     private String getShortUrl() {
         return baseUrl + "/" + RandomStringUtils.randomAlphanumeric(4, 6);
+    }
+
+    private String plusSymbols() {
+        return RandomStringUtils.randomAlphanumeric(1, 2);
     }
 
     private DataResponse<LinkData> getDataResponse(Link link) {
