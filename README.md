@@ -1,6 +1,6 @@
 # Сервис для сокращения ссылок.
 
-Работу данного сервиса можно протестировать по ссылке: /swagger-ui/index.html#/
+Работу данного сервиса можно протестировать по ссылке: https://service-short-url.herokuapp.com/swagger-ui/index.html
 
 Данный сервис был создан с использованием Spring Boot, Spring Security, Spring Data JPA , Spring Data REST. База данных MySQL. Миграции на FlyWay.
 
